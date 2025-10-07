@@ -38,10 +38,23 @@ public class Dao <T> {
         collection = database.getCollection(colecao, classe); 
     }
     
+    /**
+     * 
+     * @param chave O nome do atributo pelo qual o objeto vai ser buscado, ex: codigo. 
+     * @param valor O valor do atributo identificador do objeto a ser alterado, exemplo: 20 (vai buscar o objeto cujo código seja 20).
+     * @param novo O objeto com os novos valores que devem substituir os antigos. 
+     */
     public void alterar(String chave, String valor, T novo){
         collection.replaceOne(new Document(chave, valor), novo);        
     }
     
+    
+    /**
+     * Apaga um objeto no banco. 
+     * @param chave O nome do atributo pelo qual o objeto vai ser buscado, ex: codigo.
+     * @param valor O valor do atributo identificador do objeto a ser alterado, exemplo: 20 (vai excluir o objeto cujo código seja 20).
+     * @return True se um objeto foi excluído ou false caso contrário. 
+     */
     public boolean excluir(String chave, String valor){
         Document filter = new Document(chave, valor);
         DeleteResult result = collection.deleteOne(filter);
@@ -64,6 +77,10 @@ public class Dao <T> {
     }
     
     
+    /**
+     * Retorna todos os objetos de uma coleção do tipo T. 
+     * @return 
+     */
     public List<T> listarTodos(){
         ArrayList<T> todos = new ArrayList();          
         MongoCursor<T> cursor = collection.find().iterator();
