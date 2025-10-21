@@ -1,17 +1,21 @@
 package dao;
 
 import com.mongodb.MongoClientSettings;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Emprestimo;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
 
 /**
  * Classe responsável pela persistência de objetos. 
@@ -72,6 +76,17 @@ public class Dao <T> {
          return retorno;
     }
     
+    /**
+     * Retorna o objeto cuja chave for igual ao valor passado. 
+     * @param chave o campo pelo qual o objeto vai ser buscado
+     * @param valor o valor da chave
+     * @return O objeto correspondente à chave ou null caso não exista. 
+     */
+    public T buscarPorChave(String chave, Integer valor){ 
+         T retorno = collection.find(new Document(chave, valor)).first();
+         return retorno;
+    }
+    
     public void inserir(T objeto){       
         collection.insertOne(objeto); 
     }
@@ -92,4 +107,18 @@ public class Dao <T> {
     }
     
     
+    /**
+     * Retorna os objetos que atendam um deteminado critério, por exemplo, veículos com determinada placa. 
+     * @param campoDaColecao: o nome do atributo do objeto. Exemplo: "nome"
+     * @param criterio: o valor do atributo. Exemplo: "Gasparzinho".
+     * @return uma lista de todos os objetos que atendam ao critério. 
+     */
+    public List<T> filtrar(String campoDaColecao, String criterio) {
+        Bson filtro = Filters.eq(campoDaColecao, criterio);
+        FindIterable<T> resultados = collection.find(filtro);
+        // converte em List/ArrayList        
+        List<T>  retorno = new ArrayList();
+        resultados.into(retorno);
+        return retorno;
+    }
 }
