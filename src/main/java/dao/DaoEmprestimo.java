@@ -52,7 +52,7 @@ public class DaoEmprestimo {
             LocalDate devolucao) {
         Bson filtro1 = Filters.eq("veiculo.placa", placa);
         Bson filtro2 = Filters.gte("dataRetirada", retirada);
-        Bson filtro3 = Filters.lte("dataRetirada", devolucao);
+        Bson filtro3 = Filters.lte("dataDevolucao", devolucao);
         Bson filtros = Filters.and(filtro1, filtro2, filtro3);
         FindIterable<Emprestimo> resultados = collection.find(filtros);
         // converte em List/ArrayList        
