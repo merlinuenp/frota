@@ -11,7 +11,6 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import java.util.ArrayList;
 import java.util.List;
-import modelo.Emprestimo;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -87,7 +86,7 @@ public class Dao <T> {
          return retorno;
     }
     
-    public void inserir(T objeto){       
+    public void inserir(T objeto){     
         collection.insertOne(objeto); 
     }
     
@@ -121,4 +120,27 @@ public class Dao <T> {
         resultados.into(retorno);
         return retorno;
     }
+    
+    /**
+     * Filtro com mais de um critério. Filters.eq() verifica igualdade. 
+     * Encontra o objeto que satisfaz os dois critérios de igualdade.
+     * @param campoDaColecao1: o nome do atributo do objeto. Exemplo: "nome"
+     * @param criterio1: o valor do atributo. Exemplo: "Gasparzinho".
+     * @param campoDaColecao2: o nome do atributo do objeto. Exemplo: "cidade"
+     * @param criterio2: o valor do atributo. Exemplo: "Bandeirantes".
+     * @return 
+     */
+    public List<T> filtrar(String campoDaColecao1, String criterio1, 
+            String campoDaColecao2, String criterio2) {
+        Bson filtro1 = Filters.eq(campoDaColecao1, criterio1);
+        Bson filtro2 = Filters.eq(campoDaColecao2, criterio2);
+        Bson filtros = Filters.and(filtro1, filtro2);
+        FindIterable<T> resultados = collection.find(filtros);
+        // converte em List/ArrayList        
+        List<T>  retorno = new ArrayList();
+        resultados.into(retorno);
+        return retorno;
+    }
+    
+    
 }
